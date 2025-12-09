@@ -1,6 +1,6 @@
 # 🔥 OASNet: OASNet: Orthogonal Attention-Guided Spatial–Semantic Representation Learning Network for Infrared Small Target Detection [[📄 Paper Link]](https://ieeexplore.ieee.org/document/11219229)
 ### Xiaoyang Yuan, Chunling Yang, Yuze Li, Yan Zhang, IEEE Geoscience and Remote Sensing Letters 2025. 
-![OASNet](https://github.com/Y-xiaoyang/MNHU-Net/blob/main/Structure.png)
+![OASNet](https://github.com/Y-xiaoyang/OASNet/blob/main/Structure.png)
 # If the implementation of this repo is helpful to you, just star it！⭐⭐⭐
 
 # Usage
