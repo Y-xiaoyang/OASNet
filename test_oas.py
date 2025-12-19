@@ -10,8 +10,9 @@ from utils.metric import *
 from utils.loss import *
 from utils.load_param_data import load_dataset, load_param
 # my model
-from models.MNHU_test import *
+from models.grsl_oas import *
 import numpy as np
+from dataset_nudt_pre import TrainSetLoader_nudt, TestSetLoader_nudt
 
 class Trainer(object):
     def __init__(self, args):
@@ -27,13 +28,16 @@ class Trainer(object):
             train_img_ids, val_img_ids, test_txt = load_dataset(
                 args.root, args.dataset, args.split_method)
         # Preprocess and load data
-        input_transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize([.485, .456, .406], [.229, .224, .225])])
-        testset = TestSetLoader(dataset_dir, img_id=val_img_ids, base_size=args.base_size,
-                                crop_size=args.crop_size, transform=input_transform, suffix=args.suffix)
-        self.test_data = DataLoader(
-            dataset=testset,  batch_size=args.test_batch_size, num_workers=args.workers, drop_last=False)
+        if args.dataset!='NUDT-SIRST':       
+            input_transform = transforms.Compose([
+                              transforms.ToTensor(),
+                              transforms.Normalize([.485, .456, .406], [.229, .224, .225])])
+            testset         = TestSetLoader (dataset_dir,img_id=val_img_ids,base_size=args.base_size, crop_size=args.crop_size, transform=input_transform,suffix=args.suffix)
+            self.test_data  = DataLoader(dataset=testset,  batch_size=args.test_batch_size, num_workers=args.workers,drop_last=False)
+        else:
+            input_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+            testset = TestSetLoader_nudt(dataset_dir, args.dataset, args.dataset, img_norm_cfg=None)
+            self.test_data = DataLoader(dataset=testset, batch_size=args.test_batch_size, num_workers=args.workers, drop_last=False)
         # Network selection
         if  args.model == 'OASNet':
             model = OASNet()
@@ -44,7 +48,7 @@ class Trainer(object):
         self.model = model
 
         # Load trained model
-        checkpoint = torch.load(args.model_dir)
+        checkpoint = torch.load(args.model_dir, weights_only=False)
         self.model.load_state_dict(checkpoint['state_dict'],strict=False)
 
         # Test
